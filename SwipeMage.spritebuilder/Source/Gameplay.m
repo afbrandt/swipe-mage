@@ -20,6 +20,7 @@
 @end
 
 @implementation Gameplay {
+    CCSprite *opponent;
     Player *player;
     float delay;
 }
@@ -116,6 +117,44 @@
 
 - (void)createEvent: (GameEvent)event {
     [player spendMagic:event];
+    CCAction *path;
+    CCNode *spell = [CCNode node];
+    CCParticleSystem *effect;
+    switch (event) {
+        case GameEventTap:
+            effect = (CCParticleSystem *)[CCBReader load:@"Spells/MagicMissile"];
+            effect.autoRemoveOnFinish = YES;
+            path = [CCActionMoveTo actionWithDuration:1.0f position:opponent.position];
+            break;
+        case GameEventUpOne:
+            spell = [CCBReader load:@"Spells/FireBlast"];
+            path = [CCActionJumpTo actionWithDuration:1.0f position:opponent.position height:0.5f jumps:1];
+            break;
+        case GameEventDownOne:
+            break;
+        case GameEventLeftOne:
+            break;
+        case GameEventRightOne:
+            break;
+        case GameEventFizzle:
+            spell = [CCNode node];
+            effect = (CCParticleSystem *)[CCBReader load:@"Spells/Fizzle"];
+            effect.autoRemoveOnFinish = YES;
+            break;
+        case GameEventReady:
+            break;
+    }
+    [self addChild:spell];
+    spell.position = self.last;
+    if (effect) {
+        [spell addChild:effect];
+    }
+    if (path) {
+        [spell.animationManager setCompletedAnimationCallbackBlock:^(id sender) {
+            [spell removeFromParent];
+        }];
+        [spell runAction:path];
+    }
 }
 
 - (void)receivedEvent: (NSData *)message {
@@ -168,17 +207,17 @@
 
 
 -(void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress{
-   
+   //not used...
 }
 
 
 -(void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error{
-   
+   //not used...
 }
 
 
 -(void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID{
-   
+   //not used...
 }
 
 - (void)session:(MCSession *)session didReceiveCertificate:(NSArray *)certificate fromPeer:(MCPeerID *)peerID certificateHandler:(void(^)(BOOL accept))certificateHandler {
