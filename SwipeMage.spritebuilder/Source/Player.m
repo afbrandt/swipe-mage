@@ -108,6 +108,7 @@ static NSInteger REGEN_AMOUNT = 10;
         case GameEventDownOne:
             self.healthPoints -= 4;
             break;
+        case GameEventEnd:
         case GameEventFizzle:
         case GameEventReady:
             self.spentHealth = NO;
@@ -133,6 +134,7 @@ static NSInteger REGEN_AMOUNT = 10;
         case GameEventDownOne:
             self.magicPoints -= 15;
             break;
+        case GameEventEnd:
         case GameEventFizzle:
         case GameEventReady:
             self.spentMagic = NO;

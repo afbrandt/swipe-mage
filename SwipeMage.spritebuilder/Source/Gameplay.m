@@ -21,7 +21,7 @@
 @end
 
 @implementation Gameplay {
-    CCSprite *opponent;
+    CCNode *opponent;
     Player *player;
     float delay;
 }
@@ -41,6 +41,15 @@
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedEvent:) name:@"event-received" object:nil];
     self.connectionManager.session.delegate = self;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameOver:) name:@"player-dead" object:nil];
+}
+
+- (void)update: (CCTime)dt {
+    if (self.isBusy) {
+        delay -= dt;
+        if (delay < 0.0f) {
+            self.isBusy = NO;
+        }
+    }
 }
 
 - (void)onExit {
@@ -73,12 +82,12 @@
     self.isBusy = YES;
     if([player canCast:spell]) {
         NSLog(@"spell cast!");
-        [self sendEvent:spell];
         [self createEvent:spell];
+        [self sendEvent:spell];
     } else {
         NSLog(@"spell failed");
-        [self sendEvent:GameEventFizzle];
         [self createEvent:GameEventFizzle];
+        [self sendEvent:GameEventFizzle];
     }
 }
 
@@ -107,6 +116,7 @@
 }
 
 - (void)gameOver: (NSNotification *)message {
+    [self sendEvent:GameEventEnd];
     [self.animationManager runAnimationsForSequenceNamed:@"RecapSummon"];
 }
 
@@ -134,26 +144,36 @@
     CCParticleSystem *effect;
     switch (event) {
         case GameEventTap:
+            delay = 0.1f;
+            self.isBusy = YES;
             effect = (CCParticleSystem *)[CCBReader load:@"Spells/MagicMissile"];
             effect.autoRemoveOnFinish = YES;
             path = [CCActionMoveTo actionWithDuration:1.0f position:opponent.position];
             break;
         case GameEventUpOne:
+            delay = 1.0f;
+            self.isBusy = YES;
             spell = [CCBReader load:@"Spells/FireBlast"];
             spell.position = self.last;
-            path = [CCActionJumpTo actionWithDuration:1.0f position:opponent.position height:0.5f jumps:1];
+            path = [CCActionJumpTo actionWithDuration:1.0f position:opponent.position height:10.f jumps:1];
             break;
         case GameEventDownOne:
+            delay = 0.3f;
+            self.isBusy = YES;
             spell = [CCBReader load:@"Spells/Nullify"];
             spell.position = opponent.position;
             path = [CCAction action];
             break;
         case GameEventLeftOne:
+            delay = 2.0f;
+            self.isBusy = YES;
             spell = [CCBReader load:@"Spells/MegaBlast"];
             spell.position = self.last;
             path = [CCActionMoveTo actionWithDuration:2.0f position:opponent.position];
             break;
         case GameEventRightOne:
+            delay = 1.0f;
+            self.isBusy = YES;
             spell = (CCParticleSystem *)[CCBReader load:@"Spells/IceStorm"];
             spell.position = ccpAdd(opponent.position, ccp(0,100));
             path = [CCAction action];
@@ -165,6 +185,7 @@
             effect.autoRemoveOnFinish = YES;
             break;
         case GameEventReady:
+        case GameEventEnd:
             break;
     }
     [self addChild:spell];
@@ -183,27 +204,57 @@
     NSDictionary *payload = (NSDictionary *) [NSKeyedUnarchiver unarchiveObjectWithData:message];
     NSNumber *num = payload[@"event"];
     GameEvent event = [num integerValue];
+    CCNode *spell = [CCNode node];
+    CCAction *path;
+    spell.position = opponent.position;
+    CCParticleSystem *effect;
     switch (event) {
         case GameEventTap:
-            NSLog(@"received tap!");
+            effect = (CCParticleSystem *)[CCBReader load:@"Spells/MagicMissile"];
+            effect.autoRemoveOnFinish = YES;
+            path = [CCActionMoveTo actionWithDuration:1.0f position:self.first];
             break;
         case GameEventUpOne:
-            NSLog(@"received up!");
+            spell = [CCBReader load:@"Spells/FireBlast"];
+            spell.position = self.last;
+            path = [CCActionJumpTo actionWithDuration:1.0f position:self.first height:0.5f jumps:1];
             break;
         case GameEventDownOne:
-            NSLog(@"received down!");
+            spell = [CCBReader load:@"Spells/Nullify"];
+            spell.position = opponent.position;
+            path = [CCAction action];
             break;
         case GameEventLeftOne:
-            NSLog(@"received left!");
+            spell = [CCBReader load:@"Spells/MegaBlast"];
+            spell.position = opponent.position;
+            path = [CCActionMoveTo actionWithDuration:2.0f position:self.first];
             break;
         case GameEventRightOne:
-            NSLog(@"received right!");
+            spell = (CCParticleSystem *)[CCBReader load:@"Spells/IceStorm"];
+            spell.position = ccpAdd(opponent.position, ccp(0,100));
+            path = [CCAction action];
             break;
         case GameEventFizzle:
-            NSLog(@"recieved fizzle");
+            spell = [CCNode node];
+            spell.position = self.last;
+            effect = (CCParticleSystem *)[CCBReader load:@"Spells/Fizzle"];
+            effect.autoRemoveOnFinish = YES;
             break;
         case GameEventReady:
             break;
+        case GameEventEnd:
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"player-dead" object:nil];
+            break;
+    }
+    [self addChild:spell];
+    if (effect) {
+        [spell addChild:effect];
+    }
+    if (path) {
+        [spell.animationManager setCompletedAnimationCallbackBlock:^(id sender) {
+            [spell removeFromParent];
+        }];
+        [spell runAction:path];
     }
     [player spendHealth:event];
 }

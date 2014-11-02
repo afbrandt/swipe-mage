@@ -186,7 +186,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>resources/Cloud-4@4x.png</string>
+							<string>assets/Cloud-4@4x.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -213,6 +213,8 @@
 						</array>
 					</dict>
 				</array>
+				<key>selected</key>
+				<true/>
 				<key>seqExpanded</key>
 				<true/>
 			</dict>
@@ -502,8 +504,6 @@
 						<string>ccbResources/ccbParticleSnow.png</string>
 					</dict>
 				</array>
-				<key>selected</key>
-				<true/>
 				<key>seqExpanded</key>
 				<true/>
 			</dict>

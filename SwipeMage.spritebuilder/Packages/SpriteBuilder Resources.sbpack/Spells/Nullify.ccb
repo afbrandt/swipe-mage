@@ -257,7 +257,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>resources/Gems_01_256x256_021@4x.png</string>
+							<string>assets/Gems_01_256x256_021@4x.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -284,6 +284,8 @@
 						</array>
 					</dict>
 				</array>
+				<key>selected</key>
+				<true/>
 				<key>seqExpanded</key>
 				<true/>
 			</dict>
@@ -403,7 +405,7 @@
 			<key>resolution</key>
 			<real>30</real>
 			<key>scale</key>
-			<real>128</real>
+			<real>189.68960571289062</real>
 			<key>sequenceId</key>
 			<integer>0</integer>
 			<key>soundChannel</key>

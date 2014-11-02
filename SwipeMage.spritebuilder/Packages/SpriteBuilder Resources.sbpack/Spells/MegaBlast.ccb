@@ -163,7 +163,7 @@
 								<key>value</key>
 								<array>
 									<string></string>
-									<string>resources/Billiard_Balls_01_Green@4x.png</string>
+									<string>assets/Billiard_Balls_01_Green@4x.png</string>
 								</array>
 							</dict>
 							<dict>
@@ -260,7 +260,7 @@
 								<key>value</key>
 								<array>
 									<string></string>
-									<string>resources/Billiard_Balls_01_Green@4x.png</string>
+									<string>assets/Billiard_Balls_01_Green@4x.png</string>
 								</array>
 							</dict>
 							<dict>
@@ -357,7 +357,7 @@
 								<key>value</key>
 								<array>
 									<string></string>
-									<string>resources/Billiard_Balls_01_Green@4x.png</string>
+									<string>assets/Billiard_Balls_01_Green@4x.png</string>
 								</array>
 							</dict>
 							<dict>
@@ -382,6 +382,8 @@
 								</array>
 							</dict>
 						</array>
+						<key>selected</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>UUID</key>

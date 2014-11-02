@@ -137,8 +137,6 @@
 						<real>1</real>
 					</dict>
 				</array>
-				<key>selected</key>
-				<true/>
 			</dict>
 			<dict>
 				<key>UUID</key>
@@ -280,9 +278,9 @@
 				<key>value</key>
 				<array>
 					<real>1</real>
-					<real>100</real>
+					<real>0.15000000596046448</real>
 					<integer>2</integer>
-					<integer>0</integer>
+					<integer>2</integer>
 				</array>
 			</dict>
 			<dict>
@@ -293,7 +291,7 @@
 				<key>value</key>
 				<array>
 					<real>0.0</real>
-					<real>1</real>
+					<real>0.0</real>
 				</array>
 			</dict>
 			<dict>
@@ -310,6 +308,8 @@
 				</array>
 			</dict>
 		</array>
+		<key>selected</key>
+		<true/>
 	</dict>
 	<key>notes</key>
 	<array/>

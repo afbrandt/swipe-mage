@@ -11,6 +11,7 @@
 
 typedef NS_ENUM(NSInteger, GameEvent) {
     GameEventReady,
+    GameEventEnd,
     GameEventTap,
     GameEventUpOne,
     GameEventDownOne,
