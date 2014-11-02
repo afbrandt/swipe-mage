@@ -7,10 +7,15 @@
 //
 
 #import "CCNode.h"
+#import "Gameplay.h"
 
 @interface Player : CCNode
 
 @property (nonatomic, assign) NSInteger healthPoints;
 @property (nonatomic, assign) NSInteger magicPoints;
+
+- (void)spendHealth: (GameEvent)event;
+- (void)spendMagic: (GameEvent)event;
+- (BOOL)canCast: (GameEvent)event;
 
 @end

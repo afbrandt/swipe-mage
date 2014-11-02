@@ -10,7 +10,7 @@
 @class MCManager;
 
 typedef NS_ENUM(NSInteger, GameEvent) {
-    GameReady,
+    GameEventReady,
     GameEventTap,
     GameEventUpOne,
     GameEventDownOne,

@@ -7,22 +7,27 @@
 //
 
 #import "Gameplay.h"
+#import "Player.h"
 #import "AppDelegate.h"
 
 @interface Gameplay ()
 
-@property (nonatomic, assign) BOOL isSwiping;
+@property (nonatomic, assign) BOOL isSwiping, isBusy;
 @property (nonatomic, assign) CGPoint first, last;
 @property (nonatomic, strong) NSMutableArray *swipe;
 @property (nonatomic, strong) NSArray *peers;
 
 @end
 
-@implementation Gameplay
+@implementation Gameplay {
+    Player *player;
+    float delay;
+}
 
 
 - (void)didLoadFromCCB {
     self.isSwiping = NO;
+    self.isBusy = NO;
     self.swipe = [NSMutableArray new];
     self.peers = ((AppController *)[[UIApplication sharedApplication] delegate]).mcManager.session.connectedPeers;
     self.connectionManager = ((AppController *)[[UIApplication sharedApplication] delegate]).mcManager;
@@ -60,7 +65,18 @@
     [self.swipe removeAllObjects];
     
     //[self sendEvent:GameEventTap];
-    [self sendEvent:spell];
+    NSLog(@"current magic: %ld", player.magicPoints);
+    
+    self.isBusy = YES;
+    if([player canCast:spell]) {
+        NSLog(@"spell cast!");
+        [self sendEvent:spell];
+        [self createEvent:spell];
+    } else {
+        NSLog(@"spell failed");
+        [self sendEvent:GameEventFizzle];
+        [self createEvent:GameEventFizzle];
+    }
 }
 
 - (GameEvent)getSpellFromSwipe {
@@ -69,7 +85,7 @@
     } else {
         int diffX = self.last.x - self.first.x;
         int diffY = self.last.y - self.first.y;
-        if (diffY/diffX > 1.5) {
+        if (diffY/diffX > 1.8) {
             if (diffY > 0) {
                 return GameEventUpOne;
             } else {
@@ -86,6 +102,8 @@
     return GameEventFizzle;
 }
 
+#pragma mark - Event handling methods
+
 - (void)sendEvent: (GameEvent)event {
     NSNumber *num = [NSNumber numberWithInteger:event];
     NSDictionary *payload = @{@"event":num};
@@ -93,6 +111,10 @@
     //NSData *data = [@"hello world" dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error = nil;
     [self.connectionManager.session sendData:data toPeers:self.peers withMode:MCSessionSendDataReliable error:&error];
+}
+
+- (void)createEvent: (GameEvent)event {
+    [player spendMagic:event];
 }
 
 - (void)receivedEvent: (NSData *)message {
@@ -115,16 +137,27 @@
         case GameEventRightOne:
             NSLog(@"received right!");
             break;
-        case GameReady:
-            break;
         case GameEventFizzle:
             NSLog(@"recieved fizzle");
+            break;
+        case GameEventReady:
             break;
     }
 }
 
 
 #pragma mark - MCSessionDelegate methods
+
+-(void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state{
+    switch (state) {
+        case MCSessionStateConnected:
+            break;
+        case MCSessionStateConnecting:
+            break;
+        case MCSessionStateNotConnected:
+            break;
+    }
+}
 
 -(void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID{
    NSLog(@"Received new data!");
