@@ -125,8 +125,8 @@ static NSString* const SWIPE_MAGE_PVP_KEY = @"swipe-mage-pvp";
 - (void)browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)remotePeerID withDiscoveryInfo:(NSDictionary *)info {
     BOOL shouldInvite = self.localPeerID.hash < remotePeerID.hash;
     if (shouldInvite && self.connectionState == MCSessionStateNotConnected) {
-        NSLog(@"inviting peer!");
-        NSLog([remotePeerID displayName]);
+        //NSLog(@"inviting peer!");
+        //NSLog([remotePeerID displayName]);
         NSData *payload = [self.localPeerID.displayName dataUsingEncoding:NSASCIIStringEncoding];
         [browser invitePeer:remotePeerID toSession:self.session withContext:nil timeout:10];
             

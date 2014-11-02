@@ -24,7 +24,7 @@
 static NSInteger MAX_HEALTH = 100;
 static NSInteger MAX_MAGIC = 100;
 static float REGEN_INCREMENT = 0.9f;
-static NSInteger REGEN_AMOUNT = 1   ;
+static NSInteger REGEN_AMOUNT = 10;
 
 - (void)didLoadFromCCB {
     [self setupPlayer];
@@ -34,7 +34,7 @@ static NSInteger REGEN_AMOUNT = 1   ;
     regenTimer += dt;
 
     if (regenTimer > REGEN_INCREMENT) {
-        if (self.magicPoints < MAX_MAGIC) {
+        if (self.magicPoints + REGEN_AMOUNT < MAX_MAGIC) {
             self.magicPoints += REGEN_AMOUNT;
             self.shownMagic += REGEN_AMOUNT;
             magicBar.scaleX = (float)self.shownMagic/100.f;
@@ -44,7 +44,9 @@ static NSInteger REGEN_AMOUNT = 1   ;
 
     if (self.spentHealth) {
         self.shownHealth--;
-        healthBar.scaleX = (float)self.shownHealth/100.f;
+        if (self.shownHealth > 0) {
+            healthBar.scaleX = (float)self.shownHealth/100.f;
+        }
         //NSLog(@"Health %ld",(long)self.healthPoints);
         if (self.shownHealth == self.healthPoints) {
             self.spentHealth = NO;
@@ -59,6 +61,10 @@ static NSInteger REGEN_AMOUNT = 1   ;
         if (self.shownMagic == self.magicPoints) {
             self.spentMagic = NO;
         }
+    }
+    
+    if (self.healthPoints < 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"player-dead" object:nil];
     }
 }
 

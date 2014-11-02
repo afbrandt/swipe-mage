@@ -7,6 +7,7 @@
 //
 
 #import "Gameplay.h"
+#import "MainScene.h"
 #import "Player.h"
 #import "AppDelegate.h"
 
@@ -37,8 +38,9 @@
 - (void)onEnter {
     [super onEnter];
     self.userInteractionEnabled = YES;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedEvent:) name:@"event-received" object:nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedEvent:) name:@"event-received" object:nil];
     self.connectionManager.session.delegate = self;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(gameOver:) name:@"player-dead" object:nil];
 }
 
 - (void)onExit {
@@ -104,6 +106,15 @@
     return GameEventFizzle;
 }
 
+- (void)gameOver: (NSNotification *)message {
+    [self.animationManager runAnimationsForSequenceNamed:@"RecapSummon"];
+}
+
+- (void)mainMenu {
+    MainScene *main = (MainScene *)[CCBReader loadAsScene:@"MainScene"];
+    [[CCDirector sharedDirector] presentScene:main];
+}
+
 #pragma mark - Event handling methods
 
 - (void)sendEvent: (GameEvent)event {
@@ -119,6 +130,7 @@
     [player spendMagic:event];
     CCAction *path;
     CCNode *spell = [CCNode node];
+    spell.position = self.last;
     CCParticleSystem *effect;
     switch (event) {
         case GameEventTap:
@@ -128,16 +140,27 @@
             break;
         case GameEventUpOne:
             spell = [CCBReader load:@"Spells/FireBlast"];
+            spell.position = self.last;
             path = [CCActionJumpTo actionWithDuration:1.0f position:opponent.position height:0.5f jumps:1];
             break;
         case GameEventDownOne:
+            spell = [CCBReader load:@"Spells/Nullify"];
+            spell.position = opponent.position;
+            path = [CCAction action];
             break;
         case GameEventLeftOne:
+            spell = [CCBReader load:@"Spells/MegaBlast"];
+            spell.position = self.last;
+            path = [CCActionMoveTo actionWithDuration:2.0f position:opponent.position];
             break;
         case GameEventRightOne:
+            spell = (CCParticleSystem *)[CCBReader load:@"Spells/IceStorm"];
+            spell.position = ccpAdd(opponent.position, ccp(0,100));
+            path = [CCAction action];
             break;
         case GameEventFizzle:
             spell = [CCNode node];
+            spell.position = self.last;
             effect = (CCParticleSystem *)[CCBReader load:@"Spells/Fizzle"];
             effect.autoRemoveOnFinish = YES;
             break;
@@ -145,7 +168,6 @@
             break;
     }
     [self addChild:spell];
-    spell.position = self.last;
     if (effect) {
         [spell addChild:effect];
     }
