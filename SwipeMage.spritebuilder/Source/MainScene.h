@@ -9,7 +9,7 @@
 #import "CCNode.h"
 #import "AppDelegate.h"
 
-@interface MainScene : CCNode<MCBrowserViewControllerDelegate>
+@interface MainScene : CCNode
 
 @property (nonatomic, strong) AppController* appDelegate;
 

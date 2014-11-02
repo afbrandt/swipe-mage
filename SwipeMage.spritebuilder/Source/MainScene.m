@@ -18,16 +18,18 @@
     [super onEnter];
     
     _appDelegate = (AppController *)[[UIApplication sharedApplication] delegate];
-    [[_appDelegate mcManager] setupPeerAndSessionWithDisplayName:[UIDevice currentDevice].name];
     browsing = NO;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startGame:) name:@"peer-connect" object:nil];
 }
 
 - (void)onExit {
     [self.appDelegate.mcManager advertiseSelf:NO];
     [self.appDelegate.mcManager browse:NO];
+    [super onExit];
 }
 
-- (void)startGame {
+- (void)startGame: (NSNotification *)message {
     Gameplay *gameplay = (Gameplay *)[CCBReader loadAsScene:@"Gameplay"];
     [[CCDirector sharedDirector] presentScene:gameplay];
 }
@@ -44,7 +46,6 @@
     NSLog(@"Looking for peer...");
     CCNode *searchDialog = [CCBReader load:@"SearchDialog" owner:self];
     [self addChild:searchDialog];
-    [[_appDelegate mcManager] setupMCBrowser];
     [[_appDelegate mcManager] advertiseSelf:YES];
     [[_appDelegate mcManager] browse:YES];
     browsing = YES;

@@ -7,12 +7,13 @@
 //
 
 #import "Gameplay.h"
-
+#import "AppDelegate.h"
 
 @interface Gameplay ()
 
 @property (nonatomic, assign) BOOL isSwiping;
 @property (nonatomic, strong) NSMutableArray *swipe;
+@property (nonatomic, strong) NSArray *peers;
 
 @end
 
@@ -22,6 +23,8 @@
 - (void)didLoadFromCCB {
     self.isSwiping = NO;
     self.swipe = [NSMutableArray new];
+    self.peers = ((AppController *)[[UIApplication sharedApplication] delegate]).mcManager.session.connectedPeers;
+    self.connectionManager = ((AppController *)[[UIApplication sharedApplication] delegate]).mcManager;
 }
 
 - (void)onEnter {
@@ -43,7 +46,15 @@
     [self.swipe addObject:touch];
     NSLog(@"%lo touches cleared...", (unsigned long)[self.swipe count]);
     [self.swipe removeAllObjects];
+    
+    [self sendEvent:GameTap];
 }
 
+- (void)sendEvent: (GameEvent)event {
+    NSData *data = [@"hello world" dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *error = nil;
+    [self.connectionManager.session sendData:data toPeers:self.peers withMode:MCSessionSendDataReliable error:&error];
+    
+}
 
 @end

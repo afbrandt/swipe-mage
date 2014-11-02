@@ -7,7 +7,17 @@
 //
 
 #import "CCNode.h"
+@class MCManager;
+
+typedef NS_ENUM(NSInteger, GameEvent) {
+    GameReady,
+    GameTap
+};
 
 @interface Gameplay : CCNode
 
+@property (nonatomic, strong) MCManager *connectionManager;
+
 @end
+
+

@@ -23,32 +23,30 @@ static NSString* const SWIPE_MAGE_PVP_KEY = @"swipe-mage-pvp";
     self = [super init];
    
     if (self) {
-        _localPeerID = nil;
-        _session = nil;
-        _browser = nil;
-        _advertiser = nil;
+        _localPeerID = [[MCPeerID alloc] initWithDisplayName:[[UIDevice currentDevice] name]];
+        _session = [[MCSession alloc] initWithPeer:self.localPeerID securityIdentity:nil encryptionPreference:MCEncryptionNone];
+        self.session.delegate = self;
+        _browser = [[MCNearbyServiceBrowser alloc] initWithPeer:self.localPeerID serviceType:SWIPE_MAGE_PVP_KEY];
+        self.browser.delegate = self;
+        _advertiser = self.advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:self.localPeerID
+                                                        discoveryInfo:nil
+                                                          serviceType:SWIPE_MAGE_PVP_KEY];
+        self.advertiser.delegate = self;
     }
    
     return self;
 }
 
--(void)setupMCBrowser{
-    self.localPeerID = [[MCPeerID alloc] initWithDisplayName:[[UIDevice currentDevice] name]];
-    self.browser = [[MCNearbyServiceBrowser alloc] initWithPeer:self.localPeerID serviceType:SWIPE_MAGE_PVP_KEY];
-}
-
--(void)setupPeerAndSessionWithDisplayName:(NSString *)displayName{
-    self.localPeerID = [[MCPeerID alloc] initWithDisplayName:displayName];
-   
-    self.session = [[MCSession alloc] initWithPeer:self.localPeerID];
-    self.session.delegate = self;
+- (void)dealloc
+{
+    [self.browser stopBrowsingForPeers];
+    [self.advertiser stopAdvertisingPeer];
+    [self.session disconnect];
 }
 
 -(void)advertiseSelf:(BOOL)shouldAdvertise {
     if (shouldAdvertise) {
-        self.advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:self.localPeerID
-                                                        discoveryInfo:nil
-                                                          serviceType:SWIPE_MAGE_PVP_KEY];
+        
         self.advertiser.delegate = self;
         [self.advertiser startAdvertisingPeer];
     }
@@ -72,21 +70,24 @@ static NSString* const SWIPE_MAGE_PVP_KEY = @"swipe-mage-pvp";
 #pragma mark - MCSessionDelegate methods
 
 -(void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state{
-    if (state == MCSessionStateConnecting) {
-        self.connectionState = MCSessionStateConnecting;
-        NSLog(@"connecting...");
-    }
-    else if (state == MCSessionStateConnected) {
-        self.connectionState = MCSessionStateConnected;
-        NSLog(@"connected!");
-    }
-    else {
-    
+    switch (state) {
+        case MCSessionStateConnected:
+            self.connectionState = MCSessionStateConnected;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"peer-connect" object:peerID];
+            NSLog(@"connected!");
+            break;
+        case MCSessionStateConnecting:
+            self.connectionState = MCSessionStateConnecting;
+            NSLog(@"connecting...");
+            break;
+        case MCSessionStateNotConnected:
+            break;
     }
 }
 
 
 -(void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID{
+   NSLog(@"Received data!");
    
 }
 
@@ -121,11 +122,12 @@ static NSString* const SWIPE_MAGE_PVP_KEY = @"swipe-mage-pvp";
 
 // Found a nearby advertising peer
 - (void)browser:(MCNearbyServiceBrowser *)browser foundPeer:(MCPeerID *)remotePeerID withDiscoveryInfo:(NSDictionary *)info {
-    if (![self.localPeerID.displayName isEqualToString:remotePeerID.displayName] && self.connectionState == MCSessionStateNotConnected) {
-        NSLog(@"found peer!");
+    BOOL shouldInvite = self.localPeerID.hash < remotePeerID.hash;
+    if (shouldInvite && self.connectionState == MCSessionStateNotConnected) {
+        NSLog(@"inviting peer!");
         NSLog([remotePeerID displayName]);
         NSData *payload = [self.localPeerID.displayName dataUsingEncoding:NSASCIIStringEncoding];
-        [browser invitePeer:remotePeerID toSession:self.session withContext:payload timeout:10.0f];
+        [browser invitePeer:remotePeerID toSession:self.session withContext:nil timeout:10];
             
     }
 }
@@ -133,6 +135,11 @@ static NSString* const SWIPE_MAGE_PVP_KEY = @"swipe-mage-pvp";
 // A nearby peer has stopped advertising
 - (void)browser:(MCNearbyServiceBrowser *)browser lostPeer:(MCPeerID *)peerID {
 
+}
+
+- (void)browser:(MCNearbyServiceBrowser *)browser didNotStartBrowsingForPeers:(NSError *)error
+{
+    NSLog(@"didNotStartBrowsingForPeers: %@", error);
 }
 
 @end
