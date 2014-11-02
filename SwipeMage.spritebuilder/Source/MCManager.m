@@ -85,10 +85,11 @@ static NSString* const SWIPE_MAGE_PVP_KEY = @"swipe-mage-pvp";
     }
 }
 
+#pragma mark - MCSessionDelegate methods
 
 -(void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID{
    NSLog(@"Received data!");
-   
+   [[NSNotificationCenter defaultCenter] postNotificationName:@"event-received" object:data];
 }
 
 

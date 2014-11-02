@@ -11,10 +11,15 @@
 
 typedef NS_ENUM(NSInteger, GameEvent) {
     GameReady,
-    GameTap
+    GameEventTap,
+    GameEventUpOne,
+    GameEventDownOne,
+    GameEventLeftOne,
+    GameEventRightOne,
+    GameEventFizzle
 };
 
-@interface Gameplay : CCNode
+@interface Gameplay : CCNode<MCSessionDelegate>
 
 @property (nonatomic, strong) MCManager *connectionManager;
 

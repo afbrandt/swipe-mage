@@ -10,6 +10,7 @@
 		495AC9321A0564B60097E50F /* Gameplay.m in Sources */ = {isa = PBXBuildFile; fileRef = 495AC9311A0564B60097E50F /* Gameplay.m */; };
 		495AC93E1A05732F0097E50F /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 495AC93D1A05732F0097E50F /* MultipeerConnectivity.framework */; };
 		495AC9411A0589CC0097E50F /* MCManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 495AC9401A0589CC0097E50F /* MCManager.m */; };
+		49DB015B1A05E3E700152B67 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 49DB015A1A05E3E700152B67 /* Player.m */; };
 		8392007A18EE8E3300B6C429 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8392007918EE8E3300B6C429 /* GLKit.framework */; };
 		B71F5911188484E7003F4D28 /* iPad-old.png in Resources */ = {isa = PBXBuildFile; fileRef = B71F5907188484E7003F4D28 /* iPad-old.png */; };
 		B71F5912188484E7003F4D28 /* iPad-old@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B71F5908188484E7003F4D28 /* iPad-old@2x.png */; };
@@ -64,6 +65,8 @@
 		495AC93D1A05732F0097E50F /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		495AC93F1A0589CC0097E50F /* MCManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MCManager.h; path = Source/MCManager.h; sourceTree = "<group>"; };
 		495AC9401A0589CC0097E50F /* MCManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MCManager.m; path = Source/MCManager.m; sourceTree = "<group>"; };
+		49DB01591A05E3E700152B67 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Player.h; path = Source/Player.h; sourceTree = "<group>"; };
+		49DB015A1A05E3E700152B67 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Player.m; path = Source/Player.m; sourceTree = "<group>"; };
 		8392007918EE8E3300B6C429 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		B71F5907188484E7003F4D28 /* iPad-old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iPad-old.png"; path = "Icons/iPad-old.png"; sourceTree = "<group>"; };
 		B71F5908188484E7003F4D28 /* iPad-old@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iPad-old@2x.png"; path = "Icons/iPad-old@2x.png"; sourceTree = "<group>"; };
@@ -142,6 +145,8 @@
 				B7378993180767190076A88C /* MainScene.m */,
 				495AC93F1A0589CC0097E50F /* MCManager.h */,
 				495AC9401A0589CC0097E50F /* MCManager.m */,
+				49DB01591A05E3E700152B67 /* Player.h */,
+				49DB015A1A05E3E700152B67 /* Player.m */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -358,6 +363,7 @@
 				B737893F1807617C0076A88C /* AppDelegate.m in Sources */,
 				495AC9321A0564B60097E50F /* Gameplay.m in Sources */,
 				B7378994180767190076A88C /* MainScene.m in Sources */,
+				49DB015B1A05E3E700152B67 /* Player.m in Sources */,
 				B73789871807631A0076A88C /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

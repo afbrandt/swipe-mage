@@ -26,6 +26,7 @@
 - (void)onExit {
     [self.appDelegate.mcManager advertiseSelf:NO];
     [self.appDelegate.mcManager browse:NO];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super onExit];
 }
 
