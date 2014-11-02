@@ -18,17 +18,30 @@
 @implementation Player {
     CCNodeColor *magicBar;
     CCNodeColor *healthBar;
-
+    float regenTimer;
 }
 
 static NSInteger MAX_HEALTH = 100;
 static NSInteger MAX_MAGIC = 100;
+static float REGEN_INCREMENT = 0.9f;
+static NSInteger REGEN_AMOUNT = 1   ;
 
 - (void)didLoadFromCCB {
     [self setupPlayer];
 }
 
 - (void)update: (CCTime)dt {
+    regenTimer += dt;
+
+    if (regenTimer > REGEN_INCREMENT) {
+        if (self.magicPoints < MAX_MAGIC) {
+            self.magicPoints += REGEN_AMOUNT;
+            self.shownMagic += REGEN_AMOUNT;
+            magicBar.scaleX = (float)self.shownMagic/100.f;
+        }
+        regenTimer = 0.f;
+    }
+
     if (self.spentHealth) {
         self.shownHealth--;
         healthBar.scaleX = (float)self.shownHealth/100.f;
@@ -52,7 +65,7 @@ static NSInteger MAX_MAGIC = 100;
 - (void)setupPlayer {
     self.healthPoints = MAX_HEALTH;
     self.shownHealth = MAX_HEALTH;
-    self.magicPoints = 100;
+    self.magicPoints = MAX_HEALTH;
     self.shownMagic = MAX_MAGIC;
 }
 

@@ -85,6 +85,7 @@
     } else {
         int diffX = self.last.x - self.first.x;
         int diffY = self.last.y - self.first.y;
+        if (diffX == 0) diffX = 0.1f;
         if (diffY/diffX > 1.8) {
             if (diffY > 0) {
                 return GameEventUpOne;
@@ -143,6 +144,7 @@
         case GameEventReady:
             break;
     }
+    [player spendHealth:event];
 }
 
 
