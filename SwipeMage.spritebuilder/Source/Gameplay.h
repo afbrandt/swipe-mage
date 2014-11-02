@@ -8,6 +8,6 @@
 
 #import "CCNode.h"
 
-@interface Gameplay : CCNode <NSNetServiceDelegate>
+@interface Gameplay : CCNode
 
 @end

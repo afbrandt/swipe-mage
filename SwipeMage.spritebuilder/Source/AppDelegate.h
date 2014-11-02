@@ -25,9 +25,10 @@
 
 #import <UIKit/UIKit.h>
 #import "cocos2d.h"
+#import "MCManager.h"
 
 @interface AppController : CCAppDelegate
-{
-}
+
+@property (nonatomic, strong) MCManager *mcManager;
 
 @end

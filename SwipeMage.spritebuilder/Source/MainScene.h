@@ -7,8 +7,11 @@
 //
 
 #import "CCNode.h"
+#import "AppDelegate.h"
 
-@interface MainScene : CCNode
+@interface MainScene : CCNode<MCBrowserViewControllerDelegate>
+
+@property (nonatomic, strong) AppController* appDelegate;
 
 - (void)startGame;
 

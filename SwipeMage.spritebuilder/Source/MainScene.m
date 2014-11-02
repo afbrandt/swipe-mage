@@ -9,16 +9,22 @@
 #import "MainScene.h"
 #import "Gameplay.h"
 
-@implementation MainScene
+@implementation MainScene {
+    BOOL browsing;
+    float browseTimer;
+}
 
 - (void)onEnter {
     [super onEnter];
+    
+    _appDelegate = (AppController *)[[UIApplication sharedApplication] delegate];
+    [[_appDelegate mcManager] setupPeerAndSessionWithDisplayName:[UIDevice currentDevice].name];
+    browsing = NO;
 }
 
-- (void)browseForDevices {
-    NSLog(@"Looking for peer...");
-    CCNode *searchDialog = [CCBReader load:@"SearchDialog" owner:self];
-    [self addChild:searchDialog];
+- (void)onExit {
+    [self.appDelegate.mcManager advertiseSelf:NO];
+    [self.appDelegate.mcManager browse:NO];
 }
 
 - (void)startGame {
@@ -26,4 +32,37 @@
     [[CCDirector sharedDirector] presentScene:gameplay];
 }
 
+- (void)update: (CCTime)dt {
+    if (browsing) {
+        browseTimer += dt;
+        if (browseTimer > 0.5f) {
+        }
+    }
+}
+
+- (void)browseForDevices {
+    NSLog(@"Looking for peer...");
+    CCNode *searchDialog = [CCBReader load:@"SearchDialog" owner:self];
+    [self addChild:searchDialog];
+    [[_appDelegate mcManager] setupMCBrowser];
+    [[_appDelegate mcManager] advertiseSelf:YES];
+    [[_appDelegate mcManager] browse:YES];
+    browsing = YES;
+    browseTimer = 0.0f;
+}
+
+/*
+
+#pragma mark - MCBrowserViewControllerDelegate methods
+
+-(void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController{
+    [_appDelegate.mcManager.browser dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+-(void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController{
+    [_appDelegate.mcManager.browser dismissViewControllerAnimated:YES completion:nil];
+}
+
+*/
 @end

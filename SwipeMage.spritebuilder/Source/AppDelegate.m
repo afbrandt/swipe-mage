@@ -54,6 +54,8 @@
     
     [self setupCocos2dWithOptions:cocos2dSetup];
     
+    _mcManager = [[MCManager alloc] init];
+    
     return YES;
 }
 
